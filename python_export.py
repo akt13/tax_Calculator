@@ -16,7 +16,7 @@ def read_credentials(path=r'data_Inputs/config.txt'):
 
 
 def value_finder(df_, keyword):
-    result = df_[df_.eq(keyword).any(1)]
+    result = df_[df_.eq(keyword).any(axis=1)]
     if not result.empty:
         row_index, col_index = result.stack().index[0]
         next_col_index = (col_index) + 2
