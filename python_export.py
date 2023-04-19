@@ -73,26 +73,30 @@ def parse_zerodha_pnl(fname):
     return capital_gain, dividends
 
 
-def gen_report(data):
+def gen_report(data, fname):
     items = data.items()
     report = pd.DataFrame({'component': [i[0] for i in items], 'amount in Rs': [i[1] for i in items]})
     print(report)
-    report.to_csv('reports/final_report.csv', index=False)
+    report.to_csv(f'reports/{fname}', index=False)
 
 
 def main():
     zerodha_fname, fname, paswd = read_credentials()
     data_extracted = parse_form16(fname, paswd)
+    gen_report(data_extracted, 'form16_report.csv')
 
     capital_gain, dividends = parse_zerodha_pnl(zerodha_fname)
+    gen_report(capital_gain, 'capital_gain_report.csv')
+    gen_report(dividends, 'dividends_report.csv')
+    
     data_extracted.update(capital_gain)
     data_extracted.update(dividends)
     taxable_income, tax_payable = find_tax(data_extracted)
-    data_extracted['taxable_income'] = taxable_income
-    data_extracted['Tax payable'] = tax_payable
+    data_extracted['taxable_Income'] = taxable_income
+    data_extracted['tax_payable'] = tax_payable
     print(f"taxable_income = Rs {taxable_income}")
     print(f"Tax payable = {tax_payable}")
-    gen_report(data_extracted)
+    gen_report(data_extracted, 'final_report.csv')
 
 
 if __name__ == '__main__':
