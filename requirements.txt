@@ -1,6 +1,8 @@
-camelot-py
-pandas
-configparser
 autopep8
+camelot-py
+configparser
+ghostscript
+pandas
+pycryptodome
 pylint
 python-opencv
