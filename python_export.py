@@ -15,6 +15,28 @@ def read_credentials(path=r'data_Inputs/config.txt'):
     return fname, paswd
 
 
+def value_finder(df_, keyword):
+    result = df_[df_.eq(keyword).any(1)]
+    if not result.empty:
+        row_index, col_index = result.stack().index[0]
+        next_col_index = (col_index) + 2
+        next_col_value = df_.iloc[row_index, next_col_index]
+        if next_col_value == '':
+            next_col_index = (col_index) + 3
+            next_col_value = df_.iloc[row_index, next_col_index]
+        # print(keyword, ' : ', next_col_value)
+        return next_col_value
+
+
+def find_tax(data_extracted):
+    taxable_income = int(float(
+        data_extracted['taxable_Income'])) + int(float(data_extracted['dividents']))
+    print(taxable_income)
+    if taxable_income < 500000:
+        tax_payable = 0
+    print(tax_payable)
+
+
 def main():
     fname, paswd = read_credentials()
     tables = camelot.read_pdf(
@@ -57,28 +79,6 @@ def main():
     print(data_extracted)
 
     find_tax(data_extracted)
-
-
-def value_finder(df_, keyword):
-    result = df_[df_.eq(keyword).any(1)]
-    if not result.empty:
-        row_index, col_index = result.stack().index[0]
-        next_col_index = (col_index) + 2
-        next_col_value = df_.iloc[row_index, next_col_index]
-        if next_col_value == '':
-            next_col_index = (col_index) + 3
-            next_col_value = df_.iloc[row_index, next_col_index]
-        # print(keyword, ' : ', next_col_value)
-        return next_col_value
-
-
-def find_tax(data_extracted):
-    taxable_income = int(float(
-        data_extracted['taxable_Income'])) + int(float(data_extracted['dividents']))
-    print(taxable_income)
-    if taxable_income < 500000:
-        tax_payable = 0
-    print(tax_payable)
 
 
 if __name__ == '__main__':
