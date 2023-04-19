@@ -1,9 +1,9 @@
 # Income Tax Calculator
-1. Create a folder data_Inputs
+1. Create a folder data
 2. Add your form16 into the folder
 3. Download and add taxpnl excel export from Zerodha into the folder
 
-# filenames and form16 pdf password should be saved in data_Inputs/config.txt
+# filenames and form16 pdf password should be saved in data/config.txt
 
 ```ini
 [credentials]

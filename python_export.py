@@ -4,8 +4,10 @@ import configparser
 import camelot
 import pandas as pd
 
+from search_lookup import search_string
 
-def read_credentials(path=r'data_Inputs/config.txt'):
+
+def read_credentials(path=r'data/config.txt'):
     config = configparser.ConfigParser()
     with open(path, encoding='UTF-8') as cred_file:
         config.read_file(cred_file)
@@ -41,18 +43,10 @@ def find_tax(data_extracted):
 def main():
     zerodha_fname, fname, paswd = read_credentials()
     tables = camelot.read_pdf(
-        f"data_Inputs/{fname}", password=paswd, pages='1-end')
+        f"data/{fname}", password=paswd, pages='1-end')
 
     pdf_data = camelot.core.TableList(tables).n
 
-    search_string = {'gross_Income':  'Gross total income (6+8)',
-                     'C_80': 'Total deduction under section 80C, 80CCC and 80CCD(1)',
-                     'CCD_80': 'Deductions in respect of amount paid/deposited to notified\npension scheme under section 80CCD (1B)',
-                     'E_80': 'Deduction in respect of interest on loan taken for higher\neducation under section 80E',
-                     'G_80': 'Total Deduction in respect of donations to certain funds,\ncharitable institutions, etc. under section 80G',
-                     'TTA_80': 'Deduction in respect of interest on deposits in savings account\nunder section 80TTA',
-                     'taxable_Income': 'Total taxable income (9-11)',
-                     'tax_payable': 'Net tax payable (17-18)'}
     output_lst = []
     for i in range(pdf_data):
         for _, val in search_string.items():
@@ -64,7 +58,7 @@ def main():
     data_extracted = dict(zip(keys_lst, output_lst))
     print(data_extracted)
 
-    taxpnl_fname = f"data_Inputs/{zerodha_fname}"
+    taxpnl_fname = f"data/{zerodha_fname}"
     df_holding = pd.read_excel(
         taxpnl_fname, skiprows=13,
         sheet_name='Equity', index_col=0)
