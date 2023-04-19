@@ -40,8 +40,7 @@ def find_tax(data_extracted):
     print(tax_payable)
 
 
-def main():
-    zerodha_fname, fname, paswd = read_credentials()
+def parse_form16(fname, paswd):
     tables = camelot.read_pdf(
         f"data/{fname}", password=paswd, pages='1-end')
 
@@ -56,9 +55,11 @@ def main():
                 output_lst.append(data_)
     keys_lst = list(search_string.keys())
     data_extracted = dict(zip(keys_lst, output_lst))
-    print(data_extracted)
+    return data_extracted
 
-    taxpnl_fname = f"data/{zerodha_fname}"
+
+def parse_zerodha_pnl(fname):
+    taxpnl_fname = f"data/{fname}"
     df_holding = pd.read_excel(
         taxpnl_fname, skiprows=13,
         sheet_name='Equity', index_col=0)
@@ -68,8 +69,17 @@ def main():
 
     df_divident = pd.read_excel(
         taxpnl_fname, skiprows=14, sheet_name='Equity Dividends', index_col=0)
-    divident = df_divident['Net Dividend Amount'].sum()
-    dividends = {'dividends': divident}
+    dividend = df_divident['Net Dividend Amount'].sum()
+    dividends = {'dividends': dividend}
+    return capital_gain, dividends
+
+
+def main():
+    zerodha_fname, fname, paswd = read_credentials()
+    data_extracted = parse_form16(fname, paswd)
+    print(data_extracted)
+
+    capital_gain, dividends = parse_zerodha_pnl(zerodha_fname)
     data_extracted.update(capital_gain)
     data_extracted.update(dividends)
     print(data_extracted)
