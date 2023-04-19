@@ -1,3 +1,4 @@
 /data
+reports/final_report.csv
 *.pyc
 __pycache__

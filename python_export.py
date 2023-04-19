@@ -27,17 +27,16 @@ def value_finder(df_, keyword):
         if next_col_value == '':
             next_col_index = (col_index) + 3
             next_col_value = df_.iloc[row_index, next_col_index]
-        # print(keyword, ' : ', next_col_value)
         return next_col_value
 
 
 def find_tax(data_extracted):
     taxable_income = int(float(
         data_extracted['taxable_Income'])) + int(float(data_extracted['dividends']))
-    print(taxable_income)
     if taxable_income < 500000:
         tax_payable = 0
-    print(tax_payable)
+    return taxable_income, tax_payable
+    
 
 
 def parse_form16(fname, paswd):
@@ -74,17 +73,26 @@ def parse_zerodha_pnl(fname):
     return capital_gain, dividends
 
 
+def gen_report(data):
+    items = data.items()
+    report = pd.DataFrame({'component': [i[0] for i in items], 'amount in Rs': [i[1] for i in items]})
+    print(report)
+    report.to_csv('reports/final_report.csv', index=False)
+
+
 def main():
     zerodha_fname, fname, paswd = read_credentials()
     data_extracted = parse_form16(fname, paswd)
-    print(data_extracted)
 
     capital_gain, dividends = parse_zerodha_pnl(zerodha_fname)
     data_extracted.update(capital_gain)
     data_extracted.update(dividends)
-    print(data_extracted)
-
-    find_tax(data_extracted)
+    taxable_income, tax_payable = find_tax(data_extracted)
+    data_extracted['taxable_income'] = taxable_income
+    data_extracted['Tax payable'] = tax_payable
+    print(f"taxable_income = Rs {taxable_income}")
+    print(f"Tax payable = {tax_payable}")
+    gen_report(data_extracted)
 
 
 if __name__ == '__main__':
