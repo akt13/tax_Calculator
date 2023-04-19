@@ -1,6 +1,5 @@
 
 import configparser
-from glob import glob
 
 import camelot
 import pandas as pd
@@ -12,7 +11,9 @@ def read_credentials(path=r'data_Inputs/config.txt'):
         config.read_file(cred_file)
     fname = config.get('credentials', 'form16_fname')
     paswd = config.get('credentials', 'form16_pwd')
-    return fname, paswd
+    zerodha_taxpnl = config.get('credentials', 'zerodha_taxpnl')
+
+    return zerodha_taxpnl, fname, paswd
 
 
 def value_finder(df_, keyword):
@@ -38,7 +39,7 @@ def find_tax(data_extracted):
 
 
 def main():
-    fname, paswd = read_credentials()
+    zerodha_fname, fname, paswd = read_credentials()
     tables = camelot.read_pdf(
         f"data_Inputs/{fname}", password=paswd, pages='1-end')
 
@@ -63,15 +64,16 @@ def main():
     data_extracted = dict(zip(keys_lst, output_lst))
     print(data_extracted)
 
-    taxpnl = glob(("data_Inputs/taxpnl-*.xlsx"))
+    taxpnl_fname = f"data_Inputs/{zerodha_fname}"
     df_holding = pd.read_excel(
-        taxpnl[0], skiprows=13, sheet_name='Equity', index_col=0)
+        taxpnl_fname, skiprows=13,
+        sheet_name='Equity', index_col=0)
     df_holding = df_holding.head(3)
     capital_gain = dict(
         zip(df_holding['Unnamed: 1'], df_holding['Unnamed: 2']))
 
     df_divident = pd.read_excel(
-        taxpnl[0], skiprows=14, sheet_name='Equity Dividends', index_col=0)
+        taxpnl_fname, skiprows=14, sheet_name='Equity Dividends', index_col=0)
     divident = df_divident['Net Dividend Amount'].sum()
     dividends = {'dividents': divident}
     data_extracted.update(capital_gain)
