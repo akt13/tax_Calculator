@@ -31,7 +31,7 @@ def value_finder(df_, keyword):
 
 def find_tax(data_extracted):
     taxable_income = int(float(
-        data_extracted['taxable_Income'])) + int(float(data_extracted['dividents']))
+        data_extracted['taxable_Income'])) + int(float(data_extracted['dividends']))
     print(taxable_income)
     if taxable_income < 500000:
         tax_payable = 0
@@ -75,7 +75,7 @@ def main():
     df_divident = pd.read_excel(
         taxpnl_fname, skiprows=14, sheet_name='Equity Dividends', index_col=0)
     divident = df_divident['Net Dividend Amount'].sum()
-    dividends = {'dividents': divident}
+    dividends = {'dividends': divident}
     data_extracted.update(capital_gain)
     data_extracted.update(dividends)
     print(data_extracted)
