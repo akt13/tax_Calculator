@@ -1,2 +1,7 @@
 camelot-py
 pandas
+configparser
+ipykernel
+autopep8
+pylint
+python-opencv
