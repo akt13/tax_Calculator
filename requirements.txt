@@ -1,8 +1,8 @@
 autopep8
-camelot-py
-configparser
-ghostscript
-pandas
-pycryptodome
+camelot-py==0.11.0
+configparser==5.3.0
+ghostscript==0.7
+pandas==2.0.0
+pycryptodome==3.17
 pylint
-python-opencv
+python-opencv==1.0.0.14
