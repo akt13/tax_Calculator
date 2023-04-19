@@ -76,6 +76,10 @@ def find_tax(data_extracted):
     taxable_income = int(float(
         data_extracted['taxable_Income'])) + int(float(data_extracted['dividents']))
     print(taxable_income)
-    if (taxable_income < 500000):
+    if taxable_income < 500000:
         tax_payable = 0
     print(tax_payable)
+
+
+if __name__ == '__main__':
+    main()
